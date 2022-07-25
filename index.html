@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Chess Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chess Game AI.">
+    <link rel="icon" href="img/chesspieces/wikipedia/bK.png">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Google Icons (Material Design) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Chessboard JS (frontend lib for chess)-->
+    <link rel="stylesheet" href="lib/chessboard/chessboard.css">
+    <script defer src="lib/chessboard/chessboard.js"></script>
+
+    <!-- Chess JS (backend lib for chess)-->
+    <script defer src="lib/chess/chess.js"></script>
+
+    <!-- Custom JS -->
+    <script defer src="js/main.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+
+<body>
+
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top border-bottom">
+        <div class="container-fluid">
+            <img src="img/chesspieces/wikipedia/bK.png" alt="logo" height="30px" width="auto">
+            <a class="navbar-brand" href="#">Chess Game</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto me-5 mb-2 mb-lg-0">
+                    <!-- search depth -->
+                    <li class="nav-i tem dropdown me-2">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle border-0" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Search Depth
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <div class="dropdown-item">
+                                    <div class="form-group">
+                                        <label for="search-depth">Search Depth (Black):</label>
+                                        <select id="search-depth">
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="dropdown-item">
+                                    <div class="form-group">
+                                        <label for="search-depth-white">Search Depth (White):</label>
+                                        <select id="search-depth-white">
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <div class="dropdown-item">
+                                    <div class="form-group">
+                                        <input type="checkbox" id="showHint" name="showHint" value="showHint">
+                                        <label for="showHint">Show Suggested Move (White)</label>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- opening options -->
+                    <li class="nav-item dropdown me-2">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle  border-0" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Opening Options
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <button class="btn dropdown-item" id="startingPositionBtn">Starting Position</button>
+                            </li>
+                            <li>
+                                <button class="btn dropdown-item" id="ruyLopezBtn">Ruy Lopez</button>
+                            </li>
+                            <li>
+                                <button class="btn dropdown-item" id="italianGameBtn">Italian Game</button>
+                            </li>
+                            <li>
+                                <button class="btn dropdown-item" id="sicilianDefenseBtn">Sicilian Defense</button>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Playing Options -->
+                    <li class="nav-item dropdown me-2">
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle  border-0" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Playing Options
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <button class="btn dropdown-item" id="oneVsOneBtn">One -vs- One</button>
+                            </li>
+                            <li>
+                                <button class="btn dropdown-item" id="oneVsCompBtn">One -vs- Comp</button>
+                            </li>
+                            <li>
+                                <button class="btn dropdown-item" id="compVsCompBtn">Comp -vs- Comp</button>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- main container -->
+    <div class="container my-3">
+        <div class="row align-items-center">
+
+            <!-- chess board -->
+            <div class="col-md-6">
+                <div id="myBoard"></div>
+            </div>
+
+            <!-- game info -->
+            <div class="col-md-6 mt-5 mt-lg-0">
+
+                <!-- game controls buttons -->
+                <div id="controls" class="p-3 bg-light rounded-3">
+                    <div class="row my-2 text-align-center">
+                        <div class="col-12">
+                            <p>Game Opening : <span id="game-opening">Starting Position</span></p>
+                        </div>
+                        <div class="col-12">
+                            <p>Game Mode : <span id="game-mode">One -vs- Comp</span></p>
+                        </div>
+                    </div>
+                    <div class="row my-3 text-align-center">
+                        <div class="col-6 my-2">
+                            <button class="btn btn-success" id="startBtn">Start Game</button>
+                        </div>
+                        <div class="col-6 my-2">
+                            <button class="btn btn-outline-danger" id="resetBtn">Stop & Reset</button>
+                        </div>
+                    </div>
+                    <div class="row my-3 text-align-center">
+                        <div class="col-6 my-2">
+                            <button class="btn btn-outline-dark" id="undoBtn"><i
+                                    class="fa-solid fa-rotate-left"></i>Undo</button>
+                        </div>
+                        <div class="col-6 my-2">
+                            <button class="btn btn-outline-dark" id="redoBtn">Redo <i
+                                    class="fa-solid fa-rotate-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advantage info-->
+                <div class="text-align-center">
+                    <div class="col-md-12">
+                        <h2>Advantage</h2>
+                        <p><b><span id="advantageColor">Neither side</span></b> has the advantage (+<span id="advantageNumber">0</span>).</p>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" style="width: 50%" aria-valuemin="-2000" aria-valuemax="4000" id="advantageBar">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status info -->
+                <div class="text-align-center mt-3">
+                    <div class="col-md-12">
+                        <h2>Status</h2>
+                        <p><span id="status">No check, checkmate, or draw.</span></p>
+                    </div>
+                </div>
+
+                <!-- Time info -->
+                <div class="text-align-center mt-3">
+                    <div>
+                        <h2>Time</h2>
+                        <p>current move countdown: <span id="countdown-time">00:00</span></p>
+                    </div>
+                    <div>
+                        <p><b>White: </b><span id="white-total-time">00:00</span> / <span id="white-lastmove-time">00:00</span></p>
+                        <p><b>Black: </b><span id="black-total-time">00:00</span> / <span id="black-lastmove-time">00:00</span></p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- moves -->
+    <div class="my-5 text-align-center">
+        <div class="text-align-center p-3 bg-light rounded d-inline-block">
+            <div class="row border-bottom">
+                <div class="col-6">
+                    <p class="fw-bold">White Moves</p>
+                </div>
+                <div class="col-6">
+                    <p class="fw-bold">Black Moves</p>
+                </div>
+            </div>
+            <div id="moves" class="row">
+                <div class="col-6 border-end border-dark">
+                    <ol id="white-moves"></ol>
+                </div>
+                <div class="col-6">
+                    <ol id="black-moves"></ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- performance -->
+    <div class="my-5 text-align-center">
+        <div class="p-3 bg-light rounded-3 d-inline-block">
+            <p><span id="position-count">0</span> positions evaluated in <span id="time">0</span>s.</p>
+            <p>That's &nbsp <span id="positions-per-s">0</span> &nbsp positions / s.</p>
+        </div>
+    </div>
+
+
+    <!-- footer -->
+    <footer class="p-3 bg-light text-align-center">
+        <div>
+            <p id="love">Made with <i class="fa-solid fa-heart"></i> for Chess Players </p>
+            <p class="copyright"><img class="copyright-img" src="img/chesspieces/wikipedia/bK.png" alt=""> Copyright &copy; 2022 Chess Game </p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
